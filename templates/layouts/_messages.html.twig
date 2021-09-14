@@ -1,0 +1,15 @@
+{% for message in flash.getMessage('success') %}
+    <div class="application-alerts alert alert-success" role="alert">
+        <div class="container">
+            <i class="fa fa-check-circle" aria-hidden="true"></i> {{ message }}
+        </div>
+    </div>
+{% endfor %}
+
+{% for message in flash.getMessage('error') %}
+    <div class="application-alerts alert alert-danger" role="alert">
+        <div class="container">
+            <i class="fa fa-exclamation-circle" aria-hidden="true"></i> {{ message }}
+        </div>
+    </div>
+{% endfor %}

@@ -1,0 +1,36 @@
+version: '3.5'
+services:
+  app:
+    container_name: ${APP_NAME}-app
+    image: dersonsena/php-8.0
+    command: php -S 0.0.0.0:80 -t /usr/src/app/public
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - '${DOCKER_APP_PORT}:80'
+    networks:
+      - smllsh
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    container_name: ${APP_NAME}-db
+    command: --default-authentication-plugin=mysql_native_password --explicit_defaults_for_timestamp=1
+    restart: always
+    ports:
+      - "${DOCKER_MYSQL_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+    networks:
+      - smllsh
+    volumes:
+      - ./.docker/mysql/data:/var/lib/mysql
+
+networks:
+  smllsh:
+    driver: bridge
