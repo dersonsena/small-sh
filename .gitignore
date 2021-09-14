@@ -27,9 +27,6 @@ phpunit.phar
 tests/phpunit.xml
 
 .env
-.env.development
-.env.homolog
-.env.production
 phpunit.xml
 .php_cs.cache
 .phpunit.result.cache
@@ -38,4 +35,4 @@ tests/.phpunit.result.cache
 tests/mutation
 .docker
 dumps
-node_modules
+var/*
