@@ -2,8 +2,9 @@
 
 return [
     'displayErrorDetails' => !APP_IS_PRODUCTION,
+    'baseUrl' => $_ENV['APP_BASE_URL'],
     'session' => [
-        'name' => 'gettobi',
+        'name' => 'smallish',
         'cache_expire' => 0,
         'cookie_httponly' => true,
         'cookie_secure' => APP_IS_PRODUCTION

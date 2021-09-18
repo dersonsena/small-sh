@@ -1,0 +1,76 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}Encurte uma URL agora{% endblock %}
+
+{% block content %}
+    <div class="home-wrapper">
+        <header class="logo">
+            <h1 class="text-center"><strong>Small</strong>ish</h1>
+        </header>
+        <main>
+            <form id="form-shorten">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label for="huge-url" id="huge-url-label" class="form-label">Insira sua URL enorme para ser encurtada:</label>
+                            <input class="form-control form-control-lg" type="url" autocomplete="off" id="huge-url" name="huge-url" placeholder="http://your-huge-url.com" aria-label="http://your-huge-url.com">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg btn-shorten">
+                                <i class="fas fa-check-circle"></i><span>Encurtar!</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="shortened-url-result">
+                <a href="#" target="_blank">&nbsp;</a>
+                <button class="btn btn-primary copy-button">
+                    <i class="far fa-copy"></i> Copiar
+                </button>
+                <button class="btn btn-link new-url">
+                    Encurtar mais uma URL
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-md-12 statistics">
+                    <i class="fas fa-fire"></i> Mais de <strong>200</strong> URL's encurtadas e mais de <strong>300</strong> cliques.
+                </div>
+            </div>
+            <div class="row history-wrapper">
+                <div class="col-md-12 text-center">
+                    <button type="button" class="btn btn-link btn-toggle-history">
+                        <i class="fas fa-history"></i><span>Ver meu histórico</span>
+                    </button>
+                    <div class="shortened-urls">
+                        <ul>
+                            {% for i in 0..4 %}
+                                <li>
+                                    <div class="long-url">https://g1.globo.com/sp/sao-jose-do-rio-p...</div>
+                                    <div class="short-url">
+                                        <div class="link">
+                                            <a href="https://glo.bo/2VE6uLN" target="_blank" title="Shortened URL for https://g1.globo.com/sp/sao-jose-do-rio-preto-aracatuba/noticia/2021/09/14/aracatuba-policia-federal-cumpre-mandados-de-busca-e-prisao-durante-investigacao-de-ataque-a-bancos.ghtml">
+                                                https://glo.bo/2VE6uLN
+                                            </a>
+                                        </div>
+                                        <div class="copy">
+                                            <div class="d-grid gap-2">
+                                                <button class="btn btn-outline-primary copy-button">
+                                                    <i class="far fa-copy"></i> Copiar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

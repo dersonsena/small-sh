@@ -7,6 +7,9 @@
         <meta http-equiv="Content-Language" content="pt-br">
 
         <!-- Css -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
         <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
         <link rel="stylesheet" type="text/css" href="/css/style.css">
@@ -17,12 +20,14 @@
         <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
         <![endif]-->
 
+        <script>
+            const baseUrl = '{{ baseUrl }}';
+        </script>
         {% block headScripts %}{% endblock %}
 
-        <title>{% block title %}{% endblock %} | Trello BI</title>
+        <title>{% block title %}{% endblock %} | Smallish</title>
     </head>
     <body>
-        {% include 'layouts/_header.html.twig' %}
         {% include 'layouts/_messages.html.twig' %}
         <div class="container">
             {% block content %}{% endblock %}
@@ -31,6 +36,7 @@
         <!-- Load jQuery -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+        <script src="/js/script.js" type="text/javascript"></script>
         {% block scripts %}{% endblock %}
     </body>
 </html>

@@ -24,5 +24,7 @@ $container->set('view', function () use ($container) {
     $twigConfig = $container->get('config')['twig'];
     $flash = $container->get(Messages::class);
     $session = $container->get(SessionInterface::class);
-    return Twig::create($twigConfig['templatePath'], ['cache' => $twigConfig['cachePath']]);
+    $twig = Twig::create($twigConfig['templatePath'], ['cache' => $twigConfig['cachePath']]);
+    $twig->getEnvironment()->addGlobal('baseUrl', $container->get('config')['baseUrl']);
+    return $twig;
 });

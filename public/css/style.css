@@ -1,0 +1,154 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background-color: #0b1736;
+    color: #fff;
+    font-family: 'Raleway', sans-serif;
+}
+
+/* Chrome, Firefox, Opera, Safari 10.1+ */
+::placeholder {
+    color: #d5d5d5 !important;
+    opacity: 1; /* Firefox */
+}
+
+::-webkit-input-placeholder {
+    color: #d5d5d5 !important;
+}
+
+/* Internet Explorer 10-11 */
+:-ms-input-placeholder {
+    color: #d5d5d5 !important;
+}
+
+/* Microsoft Edge */
+::-ms-input-placeholder {
+    color: #d5d5d5 !important;
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) { }
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) { }
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { }
+
+div.home-wrapper {
+    display: flex;
+    min-height: 100vh;
+    justify-content: center;
+    flex-direction: column;
+}
+
+header.logo h1 {
+    font-size: 3.5rem;
+    font-weight: lighter;
+    letter-spacing: -2.3px;
+}
+
+label#huge-url-label {
+    font-size: 1.3rem;
+    text-align: center;
+    display: block;
+}
+
+input#huge-url {
+    padding: 1.2rem 1.2rem;
+    outline: 0;
+    border-radius: 0.9rem;
+}
+
+input#huge-url:disabled {
+    background-color: #919191;
+    opacity: .7;
+}
+
+button.btn-shorten {
+    padding: .7em;
+    font-size: 1.5rem;
+    border-radius: 0.9rem;
+}
+
+div.statistics {
+    text-align: center;
+    margin-top: 2em;
+}
+
+div.statistics i {
+    color: red;
+    font-size: 1.3em;
+}
+
+div.shortened-urls {
+    display: none;
+    color: #333;
+    border-radius: 0.9rem;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 0.3em 0.8em;
+    margin-top: 1em;
+    text-align: left;
+}
+
+div.shortened-urls ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+div.shortened-urls ul li {
+    padding: 0 0 1.2em 0;
+    border-bottom: 1px solid #ddd;
+}
+
+div.shortened-urls ul li:last-child {
+    border-bottom: none;
+}
+
+div.shortened-urls ul li div.long-url {
+    padding: .5em 0;
+}
+
+div.shortened-urls ul li div.short-url {
+}
+
+div.shortened-urls ul li div.short-url button {
+    font-size: 1.2em;
+    padding: 0.6em 0;
+}
+
+div.shortened-urls ul li div.short-url .link {
+    padding-bottom: .6em;
+}
+
+button.btn-toggle-history span {
+    margin-left: .5em;
+}
+
+button.btn-shorten span {
+    margin-left: .3em;
+}
+
+div.shortened-url-result {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    margin-top: .8em;
+}
+
+div.shortened-url-result button.copy-button {
+    font-size: 2em;
+    padding: 0.675rem 3.45rem;
+    margin-top: .4em;
+    margin-bottom: 1.2em;
+    width: 100%;
+}
+
+div.shortened-url-result a {
+    font-size: 1.7em;
+}
