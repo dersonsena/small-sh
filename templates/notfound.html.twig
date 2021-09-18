@@ -1,0 +1,15 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}URL não foi encontrada{% endblock %}
+
+{% block content %}
+    <div class="home-wrapper">
+        <header class="logo">
+            <h1 class="text-center"><strong>Small</strong>ish</h1>
+        </header>
+        <main class="text-center">
+            <h3 class="mb-5">Desculpe... mas a URL que você informou não foi encontrada =(.</h3>
+            <a href="{{ baseUrl }}" title="Encurtar uma URL agora">Encurtar uma URL</a>
+        </main>
+    </div>
+{% endblock %}

@@ -16,6 +16,9 @@ defined('APP_PATH') or define('APP_PATH', ROOT_PATH . DS . 'src');
 defined('APP_ENV') or define('APP_ENV', $_ENV['APP_ENV']);
 defined('APP_IS_PRODUCTION') or define('APP_IS_PRODUCTION', APP_ENV === 'production');
 
+date_default_timezone_set($_ENV['APP_DEFAULT_TIMEZONE']);
+locale_set_default($_ENV['APP_DEFAULT_LOCALE']);
+
 require_once CONFIG_PATH . '/dic.php';
 
 AppFactory::setContainer($container);

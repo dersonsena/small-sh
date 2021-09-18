@@ -5,7 +5,7 @@ $(document).ready(function () {
         urlHistory = JSON.parse(urlHistory);
         for (let index in urlHistory) {
             if (index === '5') break;
-            addItemInUrlHistory(urlHistory[index])
+            $('div.shortened-urls ul').append(getHistoryItemTemplate(urlHistory[index]));
         }
     }
 
@@ -67,11 +67,15 @@ $(document).ready(function () {
             }
         }).done(function(payload) {
             const urlHistory = window.localStorage.getItem('url_history');
-            let current = urlHistory ? JSON.parse(urlHistory) : [];
-            current.push(payload.data);
-            window.localStorage.setItem('url_history', JSON.stringify(current));
+            const currentHistory = urlHistory ? JSON.parse(urlHistory) : [];
+            currentHistory.push(payload.data);
+            currentHistory.sort(function (a, b) {
+                return new Date(b.created_at) - new Date(a.created_at);
+            });
 
-            addItemInUrlHistory(payload.data);
+            window.localStorage.setItem('url_history', JSON.stringify(currentHistory));
+
+            $('div.shortened-urls ul').prepend(getHistoryItemTemplate(payload.data));
 
             $btnShorten.html(originalContent);
             $btnShorten.removeAttr('disabled');
@@ -104,8 +108,8 @@ $(document).ready(function () {
     });
 });
 
-function addItemInUrlHistory(data) {
-    const template = `
+function getHistoryItemTemplate(data) {
+    return `
         <li>
             <div class="long-url" title="${data.huge}">${data.huge.substring(0, 38)}...</div>
             <div class="short-url">
@@ -124,6 +128,4 @@ function addItemInUrlHistory(data) {
             </div>
         </li>
     `;
-
-    $('div.shortened-urls ul').append(template);
 }
