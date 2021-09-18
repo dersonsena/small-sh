@@ -3,7 +3,7 @@ services:
   app:
     container_name: ${APP_NAME}-app
     image: dersonsena/php-8.0
-    command: php -S 0.0.0.0:80 -t /usr/src/app/public
+    command: php -S 0.0.0.0:80 -t /usr/src/app/public_html
     build:
       context: .
       dockerfile: Dockerfile

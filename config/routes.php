@@ -16,7 +16,7 @@ return function (App $app) {
 
     $app->get('/{path}', AccessUrlController::class);
 
-    $app->group('/api/public', function (RouteCollectorProxy $group) {
+    $app->group('/api/public_html', function (RouteCollectorProxy $group) {
         $group->post('/shorten', ShortenUrlController::class);
     });
 };
