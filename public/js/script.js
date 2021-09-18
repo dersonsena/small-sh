@@ -1,4 +1,14 @@
 $(document).ready(function () {
+    let urlHistory = window.localStorage.getItem('url_history');
+
+    if (urlHistory) {
+        urlHistory = JSON.parse(urlHistory);
+        for (let index in urlHistory) {
+            if (index === '5') break;
+            addItemInUrlHistory(urlHistory[index])
+        }
+    }
+
     $('button.btn-toggle-history').on('click', function () {
         const $button = $('button.btn-toggle-history');
         $('.shortened-urls').fadeToggle('fast', 'linear', function () {
@@ -11,9 +21,17 @@ $(document).ready(function () {
     });
 
     $('button.copy-button').on('click', function () {
-        $(this).removeClass('btn-outline-primary')
-        $(this).addClass('btn-success')
-        $(this).html('<i class="fas fa-check-circle"></i> Copiado!')
+        const $btn = $(this);
+        navigator.clipboard.writeText($btn.attr('data-url'));
+
+        $btn.removeClass('btn-light')
+        $btn.addClass('btn-success')
+        $btn.html('<i class="fas fa-check-circle"></i> Copiado!')
+        setTimeout(function () {
+            $btn.removeClass('btn-success')
+            $btn.addClass('btn-light')
+            $btn.html('<i class="far fa-copy"></i> Copiar')
+        }, 3000)
     });
 
     $('button.btn-shorten').on('click', function (e) {
@@ -48,6 +66,13 @@ $(document).ready(function () {
                 $btnShorten.empty().append($span);
             }
         }).done(function(payload) {
+            const urlHistory = window.localStorage.getItem('url_history');
+            let current = urlHistory ? JSON.parse(urlHistory) : [];
+            current.push(payload.data);
+            window.localStorage.setItem('url_history', JSON.stringify(current));
+
+            addItemInUrlHistory(payload.data);
+
             $btnShorten.html(originalContent);
             $btnShorten.removeAttr('disabled');
             $inputUrl.removeAttr('disabled');
@@ -56,7 +81,8 @@ $(document).ready(function () {
 
             const $divResult = $('div.shortened-url-result');
             $divResult.css('display', 'flex');
-            $divResult.find('a').html(payload.data.shortened);
+            $divResult.find('a').attr('href', payload.data.shortened).html(payload.data.shortened);
+            $divResult.find('button').attr('data-url', payload.data.shortened);
         }).fail(function(jqXHR, textStatus, msg) {
             $btnShorten.html(originalContent);
             $btnShorten.removeAttr('disabled');
@@ -67,9 +93,37 @@ $(document).ready(function () {
     $('button.new-url').on('click', function () {
         $('form#form-shorten').show();
         $('div.history-wrapper').show();
-        $('div.shortened-url-result').css('display', 'none');
+        const $divResult = $('div.shortened-url-result');
+        $divResult.css('display', 'none');
+        $divResult.find('a').attr('href', '#');
+        $divResult.find('button').attr('data-url', '');
+
         const $input = $('input#huge-url');
         $input.val('');
         $input.select();
     });
-})
+});
+
+function addItemInUrlHistory(data) {
+    const template = `
+        <li>
+            <div class="long-url" title="${data.huge}">${data.huge.substring(0, 38)}...</div>
+            <div class="short-url">
+                <div class="link">
+                    <a href="${data.shortened}" target="_blank" title="URL encurtada de ${data.huge}">
+                        ${data.shortened}
+                    </a>
+                </div>
+                <div class="copy">
+                    <div class="d-grid gap-2">
+                        <button data-url="${data.shortened}" class="btn btn-outline-primary copy-button">
+                            <i class="far fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </li>
+    `;
+
+    $('div.shortened-urls ul').append(template);
+}
