@@ -88,6 +88,25 @@ $(document).ready(function () {
             $divResult.find('a').attr('href', payload.data.shortened).html(payload.data.shortened);
             $divResult.find('button').attr('data-url', payload.data.shortened);
         }).fail(function(jqXHR, textStatus, msg) {
+            if (jqXHR.status === 400) {
+                const payload = jqXHR.responseJSON;
+                let message = '';
+                switch (payload.data.huge_url) {
+                    case 'invalid-url':
+                        message = 'Insira ua URL válida com "http://" ou "https://" para poder encurtar.';
+                        break;
+                    case 'empty-value':
+                        message = 'Url longa não pode ser vazia.';
+                        break;
+                }
+                alert(message);
+                $inputUrl.select();
+            }
+
+            if (jqXHR.status === 500) {
+                alert('Ops, ocorreu algum problema pra gerar sua URL. Por favor, tenta novamente.');
+            }
+
             $btnShorten.html(originalContent);
             $btnShorten.removeAttr('disabled');
             $inputUrl.removeAttr('disabled');

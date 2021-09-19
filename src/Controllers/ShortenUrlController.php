@@ -14,11 +14,13 @@ use Ramsey\Uuid\Uuid;
 
 final class ShortenUrlController
 {
-    private ContainerInterface $container;
+    private array $config;
+    private PDO $db;
 
     public function __construct(ContainerInterface $container)
     {
-        $this->container = $container;
+        $this->db = $container->get('db');
+        $this->config = $container->get('config');
     }
 
     public function __invoke(Request $request, Response $response, array $args): Response
@@ -64,9 +66,7 @@ final class ShortenUrlController
             return $newResponse;
         }
 
-        /** @var PDO $db */
-        $db = $this->container->get('db');
-        $stmt = $db->prepare(trim("
+        $stmt = $this->db->prepare(trim("
                 INSERT INTO `urls` (`id`, `uuid`, `long_url`, `short_url_path`, `created_at`)
                 VALUES (:id, :uuid, :long_url, :short_url_path, :created_at)
             "));
@@ -91,7 +91,7 @@ final class ShortenUrlController
             'status' => 'success',
             'data' => [
                 'huge' => $contents['huge_url'],
-                'shortened' => $this->container->get('config')['baseUrl'] . '/' . $shortUrlPath,
+                'shortened' => $this->config['baseUrl'] . '/' . $shortUrlPath,
                 'created_at' => $createdAt->format(DateTimeInterface::ATOM)
             ]
         ]));

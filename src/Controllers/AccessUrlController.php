@@ -10,30 +10,31 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Ramsey\Uuid\Uuid;
+use Slim\Views\Twig;
 
 final class AccessUrlController
 {
-    private ContainerInterface $container;
+    private PDO $db;
+    private Twig $view;
 
     public function __construct(ContainerInterface $container)
     {
-        $this->container = $container;
+        $this->db = $container->get('db');
+        $this->view = $container->get('view');
     }
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {
-        /** @var PDO $db */
-        $db = $this->container->get('db');
-        $stmt = $db->prepare("SELECT `id`, `long_url` FROM `urls` WHERE `short_url_path` = :path");
+        $stmt = $this->db->prepare("SELECT `id`, `long_url` FROM `urls` WHERE `short_url_path` = :path");
         $stmt->execute(['path' => $args['path']]);
         $row = $stmt->fetch();
 
         if (!$row) {
-            return $this->container->get('view')->render($response, 'notfound.html.twig', []);
+            return $this->view->render($response, 'notfound.html.twig', []);
         }
 
         $sql = "INSERT INTO `urls_logs` (`id`, `uuid`, `url_id`, `created_at`, `meta`) VALUES (:id, :uuid, :url_id, :created_at, :meta)";
-        $stmt = $db->prepare($sql);
+        $stmt = $this->db->prepare($sql);
 
         $uuid = Uuid::uuid4();
 
