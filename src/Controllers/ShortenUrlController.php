@@ -71,7 +71,21 @@ final class ShortenUrlController
                 VALUES (:id, :uuid, :long_url, :short_url_path, :created_at)
             "));
 
-        $shortUrlPath = substr(sha1(uniqid((string)rand(), true)), 0, 10);
+        $shortUrlPath = substr(sha1(uniqid((string)rand(), true)), 0, 5);
+
+        while (true) {
+            $stmt2 = $this->db->prepare('select `id` from `urls` where `short_url_path` = :path');
+            $stmt2->execute(['path' => $shortUrlPath]);
+            $row = $stmt2->fetch();
+
+            if ($row !== false) {
+                $shortUrlPath = substr(sha1(uniqid((string)rand(), true)), 0, 5);
+                continue;
+            }
+
+            break;
+        }
+
         $uuid = Uuid::uuid4();
         $createdAt = new DateTimeImmutable();
 
