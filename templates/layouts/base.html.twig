@@ -32,10 +32,28 @@
         {% block headScripts %}{% endblock %}
 
         <title>Smallish | {% block title %}{% endblock %}</title>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZ4ZZ46DK0"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-RZ4ZZ46DK0');
+        </script>
     </head>
     <body>
         {% include 'layouts/_messages.html.twig' %}
         <div class="container" style="max-width: 720px">
+            <header class="top-header text-center mt-2">
+                <a href="https://github.com/dersonsena/small-sh" target="_blank">
+                    <img alt="GitHub forks" src="https://img.shields.io/github/forks/dersonsena/small-sh?style=social">
+                </a>
+                <a href="https://github.com/dersonsena/small-sh" target="_blank">
+                    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/dersonsena/small-sh?style=social">
+                </a>
+            </header>
             {% block content %}{% endblock %}
         </div>
 
