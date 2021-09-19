@@ -85,7 +85,9 @@ $(document).ready(function () {
 
             const $divResult = $('div.shortened-url-result');
             $divResult.css('display', 'flex');
-            $divResult.find('a').attr('href', payload.data.shortened).html(payload.data.shortened);
+            $divResult.find('a').attr('href', payload.data.shortened);
+            $divResult.find('a span.url-text').html(payload.data.shortened);
+            $divResult.find('a span.badge').html(`-${payload.data.economyRate}%`);
             $divResult.find('button').attr('data-url', payload.data.shortened);
         }).fail(function(jqXHR, textStatus, msg) {
             if (jqXHR.status === 400) {

@@ -67,8 +67,8 @@ final class ShortenUrlController
         }
 
         $stmt = $this->db->prepare(trim("
-                INSERT INTO `urls` (`id`, `uuid`, `long_url`, `short_url_path`, `created_at`)
-                VALUES (:id, :uuid, :long_url, :short_url_path, :created_at)
+                INSERT INTO `urls` (`id`, `uuid`, `long_url`, `short_url_path`, `economy_rate`, `created_at`)
+                VALUES (:id, :uuid, :long_url, :short_url_path, :economy_rate, :created_at)
             "));
 
         $shortUrlPath = substr(sha1(uniqid((string)rand(), true)), 0, 5);
@@ -86,14 +86,17 @@ final class ShortenUrlController
             break;
         }
 
+        $fullShortenUrl = $this->config['baseUrl'] . '/' . $shortUrlPath;
         $uuid = Uuid::uuid4();
         $createdAt = new DateTimeImmutable();
+        $economyRate = ceil(100 - ((strlen($fullShortenUrl) * 100) / strlen($contents['huge_url'])));
 
         $stmt->execute([
             'id' => $uuid->getBytes(),
             'uuid' => $uuid->toString(),
             'long_url' => $contents['huge_url'],
             'short_url_path' => $shortUrlPath,
+            'economy_rate' => $economyRate,
             'created_at' => $createdAt->format('Y-m-d H:i:s')
         ]);
 
@@ -105,8 +108,9 @@ final class ShortenUrlController
             'status' => 'success',
             'data' => [
                 'huge' => $contents['huge_url'],
-                'shortened' => $this->config['baseUrl'] . '/' . $shortUrlPath,
-                'created_at' => $createdAt->format(DateTimeInterface::ATOM)
+                'shortened' => $fullShortenUrl,
+                'created_at' => $createdAt->format(DateTimeInterface::ATOM),
+                'economyRate' => $economyRate
             ]
         ]));
 

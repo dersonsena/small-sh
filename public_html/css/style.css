@@ -149,6 +149,12 @@ div.shortened-url-result button.copy-button {
     width: 100%;
 }
 
-div.shortened-url-result a {
+div.shortened-url-result a span.url-text {
     font-size: 1.7em;
+}
+
+div.shortened-url-result span.badge {
+    position: absolute;
+    margin: -1.6em 1em 1em -3.1em;
+    font-size: 0.9em;
 }
