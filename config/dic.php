@@ -5,10 +5,6 @@ use Slim\Views\Twig;
 
 $containerBuilder = new ContainerBuilder();
 
-if (APP_IS_PRODUCTION) {
-    $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
-}
-
 $dependencies = require __DIR__ . '/dependencies.php';
 $dependencies($containerBuilder);
 

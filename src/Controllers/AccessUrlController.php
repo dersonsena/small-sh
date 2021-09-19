@@ -43,12 +43,12 @@ final class AccessUrlController
             'url_id' => $row['id'],
             'created_at' => (new DateTimeImmutable())->format('Y-m-d H:i:s'),
             'meta' => json_encode([
-                'REMOTE_ADDR' => filter_input(INPUT_SERVER, 'REMOTE_ADDR'),
-                'REMOTE_PORT' => filter_input(INPUT_SERVER, 'REMOTE_PORT'),
-                'SERVER_NAME' => filter_input(INPUT_SERVER, 'SERVER_NAME'),
-                'REQUEST_URI' => filter_input(INPUT_SERVER, 'REQUEST_URI'),
-                'HTTP_HOST' => filter_input(INPUT_SERVER, 'HTTP_HOST'),
-                'HTTP_USER_AGENT' => filter_input(INPUT_SERVER, 'HTTP_USER_AGENT'),
+                'REMOTE_ADDR' => $_SERVER['REMOTE_ADDR'],
+                'REMOTE_PORT' => $_SERVER['REMOTE_PORT'],
+                'SERVER_NAME' => $_SERVER['SERVER_NAME'],
+                'REQUEST_URI' => $_SERVER['REQUEST_URI'],
+                'HTTP_HOST' => $_SERVER['HTTP_HOST'],
+                'HTTP_USER_AGENT' => $_SERVER['HTTP_USER_AGENT']
             ]),
         ]);
 
