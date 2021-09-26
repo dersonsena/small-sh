@@ -15,7 +15,6 @@ use DateTimeInterface;
  * @property-read Url $longUrl
  * @property-read Url $shortUrl
  * @property-read LongUrlType $type
- * @property-read float $economyRate
  * @property-read DateTimeInterface $createdAt
  */
 final class LongUrl extends EntityBase
@@ -24,10 +23,14 @@ final class LongUrl extends EntityBase
     protected Url $longUrl;
     protected Url $shortUrl;
     protected LongUrlType $type;
-    protected DateTimeInterface $createdAt;
+    protected ?DateTimeInterface $createdAt;
 
     public static function create(array $values): EntityBase
     {
+        if (!isset($values['createdAt'])) {
+            $values['createdAt'] = (new DateTimeImmutable())->format(DateTimeInterface::ATOM);
+        }
+
         $values['shortUrl'] = $values['baseUrlToShortUrl'] . '/' . self::generatePathToShortUrl();
         return parent::create($values);
     }
@@ -54,10 +57,6 @@ final class LongUrl extends EntityBase
 
     protected function setCreatedAt(string $createdAt)
     {
-        if (empty($createdAt)) {
-            return null;
-        }
-
         $this->createdAt = new DateTimeImmutable($createdAt);
     }
 
@@ -70,6 +69,11 @@ final class LongUrl extends EntityBase
     {
         $urlParts = explode('/', $this->shortUrl->value());
         return end($urlParts);
+    }
+
+    public function renewShortUrlPath(): void
+    {
+        $this->shortUrl = new Url($this->baseUrlToShortUrl . '/' . self::generatePathToShortUrl());
     }
 
     public static function generatePathToShortUrl(): string

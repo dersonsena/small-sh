@@ -25,8 +25,8 @@ final class ShortenUrl
         $longUrl = $this->urlRepo->shortLongUrl($longUrl);
 
         return OutputData::create([
-           'longUrl' => $longUrl->longUrl,
-           'shortenedUrl' => $longUrl->shortUrl,
+           'longUrl' => $longUrl->longUrl->value(),
+           'shortenedUrl' => $longUrl->shortUrl->value(),
            'economyRate' => $longUrl->calculateEconomyRate(),
            'createdAt' => $longUrl->createdAt->format(DateTimeInterface::ATOM),
         ]);

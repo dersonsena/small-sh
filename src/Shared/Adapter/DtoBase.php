@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Shared\Adapter;
 
+use App\Shared\Adapter\Contracts\Dto;
 use App\Shared\Adapter\Exception\InvalidDtoParam;
 
 /**
@@ -12,7 +13,7 @@ use App\Shared\Adapter\Exception\InvalidDtoParam;
  */
 abstract class DtoBase implements Dto
 {
-    private array $boundaryValues = [];
+    private array $values = [];
 
     /**
      * Boundary constructor.
@@ -31,7 +32,7 @@ abstract class DtoBase implements Dto
             }
 
             $this->{$key} = $value;
-            $this->boundaryValues[$key] = $this->get($key);
+            $this->values[$key] = $this->get($key);
         }
     }
 
@@ -50,7 +51,7 @@ abstract class DtoBase implements Dto
      */
     public function values(): array
     {
-        return $this->boundaryValues;
+        return $this->values;
     }
 
     /**

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Controllers\AccessUrlController;
-use App\Controllers\HomeController;
-use App\Controllers\ShortenUrlController;
+use App\Adapter\Controllers\AccessUrlController;
+use App\Adapter\Controllers\HomeController;
+use App\Adapter\Controllers\ShortenUrlController;
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 
