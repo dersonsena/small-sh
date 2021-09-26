@@ -19,10 +19,7 @@ use ReflectionException;
  */
 abstract class EntityBase implements Entity
 {
-    /**
-     * @var string|int
-     */
-    protected $id;
+    protected string | int | null $id = null;
 
     /**
      * Entity constructor.

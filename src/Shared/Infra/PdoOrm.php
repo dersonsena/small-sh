@@ -32,7 +32,39 @@ final class PdoOrm implements DatabaseOrm
 
     public function read(string $tableName, array $filters, array $options = []): ?array
     {
-        return null;
+        $columns = '*';
+        $clauses = '';
+
+        if (isset($options['columns'])) {
+            $columns = array_map(fn ($columnName) => '`' . $columnName . '`', $options['columns']);
+            $columns = implode(',', $columns);
+        }
+
+        $filterColumns = array_keys($filters);
+        $i = 0;
+
+        foreach ($filterColumns as $columnName) {
+            if ($i === 0) {
+                $clauses .= "WHERE `{$columnName}` = :{$columnName}";
+            }
+
+            if ($i > 0) {
+                $clauses .= "AND `{$columnName}` = :{$columnName}";
+            }
+
+            $i++;
+        }
+
+        $sql = sprintf("SELECT %s FROM `%s` %s", $columns, $tableName, $clauses);
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($filters);
+        $row = $stmt->fetch();
+        
+        if (!$row) {
+            return null;
+        }
+        
+        return $row;
     }
 
     public function update(string $tableName, array $values, array $conditions): bool

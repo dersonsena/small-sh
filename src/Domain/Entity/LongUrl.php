@@ -21,8 +21,8 @@ final class LongUrl extends EntityBase
 {
     protected Url $baseUrlToShortUrl;
     protected Url $longUrl;
-    protected Url $shortUrl;
     protected LongUrlType $type;
+    protected ?Url $shortUrl;
     protected ?DateTimeInterface $createdAt;
 
     public static function create(array $values): EntityBase
@@ -31,7 +31,10 @@ final class LongUrl extends EntityBase
             $values['createdAt'] = (new DateTimeImmutable())->format(DateTimeInterface::ATOM);
         }
 
-        $values['shortUrl'] = $values['baseUrlToShortUrl'] . '/' . self::generatePathToShortUrl();
+        if (!isset($values['shortUrl'])) {
+            $values['shortUrl'] = $values['baseUrlToShortUrl'] . '/' . self::generatePathToShortUrl();
+        }
+
         return parent::create($values);
     }
 

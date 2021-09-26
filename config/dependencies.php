@@ -37,7 +37,11 @@ return function (ContainerBuilder $containerBuilder) {
             return new RamseyUiidAdapter();
         },
         LongUrlRepository::class => function (ContainerInterface $c) {
-            return new DbLongUrlRepository($c->get(DatabaseOrm::class), $c->get(RamseyUiidAdapter::class));
+            return new DbLongUrlRepository(
+                $c->get(DatabaseOrm::class),
+                $c->get(RamseyUiidAdapter::class),
+                $c->get('config')
+            );
         },
     ]);
 };
