@@ -25,18 +25,24 @@ final class EntityException extends Exception implements DomainExceptionInterfac
 
     public static function readonlyProperty(string $className, string $propertyName, array $details = []): self
     {
-        return new self(
-            "You cannot change the property '{$propertyName}' of the Entity class '{$className}' because it is read-only.",
-            $details
+        $message = sprintf(
+            "You cannot change the property '%s' of the Entity class '%s' because it is read-only.",
+            $propertyName,
+            $className
         );
+
+        return new self($message, $details);
     }
 
     public static function propertyDoesNotExists(string $className, string $propertyName, array $details = []): self
     {
-        return new self(
-            "You cannot get the property '{$propertyName}' because it doesn't exist in Entity '{$className}'",
-            $details
+        $message = sprintf(
+            "You cannot get the property '%s' because it doesn't exist in Entity '%s'",
+            $propertyName,
+            $className
         );
+
+        return new self($message, $details);
     }
 
     public function details(): array

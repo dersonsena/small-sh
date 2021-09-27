@@ -11,7 +11,8 @@ final class PdoOrm implements DatabaseOrm
 {
     public function __construct(
         private PDO $pdo
-    ) {}
+    ) {
+    }
 
     public function create(string $tableName, array $values): int|string
     {
@@ -59,11 +60,11 @@ final class PdoOrm implements DatabaseOrm
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($filters);
         $row = $stmt->fetch();
-        
+
         if (!$row) {
             return null;
         }
-        
+
         return $row;
     }
 

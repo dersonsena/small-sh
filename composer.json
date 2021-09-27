@@ -10,7 +10,16 @@
     ],
     "scripts": {
         "start": "php -S localhost:8080 -t public_html",
-        "test": "phpunit"
+        "test": "phpunit --testdox --configuration tests/phpunit.xml",
+        "test-unit": "phpunit --configuration tests/phpunit.xml --testdox --testsuite unit",
+        "test-integration": "phpunit --configuration tests/phpunit.xml --testdox --testsuite integration",
+        "test-filter": "phpunit --configuration tests/phpunit.xml --filter ",
+        "coverage": "phpunit --configuration tests/phpunit.xml --coverage-html tests/coverage/html",
+        "coverage-ci": "phpunit --configuration tests/phpunit.xml --coverage-text --colors=never",
+        "phpcs": "phpcs --standard=phpcs.xml",
+        "phpcs-fixer": "php-cs-fixer fix --config=.php-cs-fixer.php --allow-risky yes",
+        "phpcbf": "phpcbf -w -p",
+        "psalm": "psalm --show-info=true"
     },
     "require": {
         "php": "^8.0",
@@ -24,14 +33,25 @@
         "slim/psr7": "^1.4",
         "slim/slim": "^4.8",
         "slim/twig-view": "^3.2",
-        "vlucas/phpdotenv": "^5.3",
+        "vlucas/phpdotenv": "^5.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5"
+        "dg/bypass-finals": "^1.3",
+        "fakerphp/faker": "^1.16",
+        "friendsofphp/php-cs-fixer": "^3.1",
+        "phpunit/phpunit": "^8.5",
+        "squizlabs/php_codesniffer": "^3.6",
+        "vimeo/psalm": "^4.10"
     },
     "config": {
-        "process-timeout": 0,
-        "sort-packages": true
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "github-protocols": ["https"],
+        "sort-packages": true,
+        "process-timeout": 1800,
+        "platform": {
+            "php": "7.4"
+        }
     },
     "autoload": {
         "psr-4": {
