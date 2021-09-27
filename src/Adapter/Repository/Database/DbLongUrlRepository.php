@@ -9,6 +9,7 @@ use App\Domain\Repository\LongUrlRepository;
 use App\Shared\Adapter\Contracts\DatabaseOrm;
 use App\Shared\Adapter\Contracts\UuidGenerator;
 use DateTimeImmutable;
+use PDO;
 
 final class DbLongUrlRepository implements LongUrlRepository
 {
@@ -77,5 +78,16 @@ final class DbLongUrlRepository implements LongUrlRepository
             'created_at' => (new DateTimeImmutable())->format('Y-m-d H:i:s'),
             'meta' => json_encode($metaInfo)
         ]);
+    }
+
+    public function countUrlsAndClicks(): array
+    {
+        $sql = "select count(*) as `total_urls` from `urls` union all select count(*) as `total_clicks` from `urls_logs`";
+        $rows = $this->orm->querySql($sql, [], ['fetchMode' => PDO::FETCH_COLUMN]);
+
+        return [
+            'totalUrls' => ceil($rows[0]),
+            'totalClicks' => ceil($rows[1])
+        ];
     }
 }

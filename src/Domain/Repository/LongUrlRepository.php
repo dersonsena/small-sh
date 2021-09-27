@@ -11,4 +11,5 @@ interface LongUrlRepository
     public function shortLongUrl(LongUrl $url): LongUrl;
     public function getUrlByPath(string $path):? LongUrl;
     public function registerAccess(LongUrl $url, array $metaInfo = []);
+    public function countUrlsAndClicks(): array;
 }

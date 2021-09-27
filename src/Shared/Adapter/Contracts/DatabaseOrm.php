@@ -12,4 +12,5 @@ interface DatabaseOrm
     public function delete(string $tableName, array $conditions): bool;
     public function search(string $tableName, array $filters, array $options = []): array;
     public function persist(string $tableName, array $values): int | string;
+    public function querySql(string $sql, array $values = [], array $options = []): array;
 }

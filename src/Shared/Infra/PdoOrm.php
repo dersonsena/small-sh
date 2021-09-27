@@ -86,4 +86,12 @@ final class PdoOrm implements DatabaseOrm
     {
         return '';
     }
+
+    public function querySql(string $sql, array $values = [], array $options = []): array
+    {
+        $stmt = $this->pdo->prepare(trim($sql));
+        $stmt->execute($values);
+        $fetchMode = $options['fetchMode'] ?? PDO::FETCH_ASSOC;
+        return $stmt->fetchAll($fetchMode);
+    }
 }
