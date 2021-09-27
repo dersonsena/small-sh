@@ -24,7 +24,7 @@ final class AccessUrlController
     public function __invoke(Request $request, Response $response, array $args): Response
     {
         $url = $this->longUrlRepo->getUrlByPath($args['path']);
-        
+
         if (is_null($url)) {
             return $this->view->render($response, 'notfound.html.twig', []);
         }

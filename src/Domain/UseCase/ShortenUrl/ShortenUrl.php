@@ -12,7 +12,8 @@ final class ShortenUrl
 {
     public function __construct(
         private LongUrlRepository $urlRepo
-    ) {}
+    ) {
+    }
 
     public function execute(InputData $input): OutputData
     {

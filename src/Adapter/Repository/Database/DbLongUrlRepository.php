@@ -17,7 +17,8 @@ final class DbLongUrlRepository implements LongUrlRepository
         private DatabaseOrm $orm,
         private UuidGenerator $uuidGenerator,
         private array $config
-    ) {}
+    ) {
+    }
 
     public function shortLongUrl(LongUrl $url): LongUrl
     {
@@ -49,7 +50,7 @@ final class DbLongUrlRepository implements LongUrlRepository
         return $url;
     }
 
-    public function getUrlByPath(string $path):? LongUrl
+    public function getUrlByPath(string $path): ?LongUrl
     {
         $urlRecord = $this->orm->read('urls', ['short_url_path' => $path]);
 
@@ -82,7 +83,10 @@ final class DbLongUrlRepository implements LongUrlRepository
 
     public function countUrlsAndClicks(): array
     {
-        $sql = "select count(*) as `total_urls` from `urls` union all select count(*) as `total_clicks` from `urls_logs`";
+        $sql = "
+            select count(*) as `total_urls` from `urls` union all select count(*) as `total_clicks` from `urls_logs`
+        ";
+
         $rows = $this->orm->querySql($sql, [], ['fetchMode' => PDO::FETCH_COLUMN]);
 
         return [

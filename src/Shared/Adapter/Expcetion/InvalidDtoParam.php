@@ -23,7 +23,8 @@ final class InvalidDtoParam extends Exception
     {
         return new self(sprintf(
             "It couldn't construct DTO '%s' because the property '%s' doesn't exist",
-            $className, $property
+            $className,
+            $property
         ), [
             'className' => $className,
             'property' => $property,
@@ -34,7 +35,8 @@ final class InvalidDtoParam extends Exception
     {
         return new self(sprintf(
             "You cannot change the property '%s' of the DTO class '%s' because it is read-only.",
-            $property, $className
+            $property,
+            $className
         ), [
             'className' => $className,
             'property' => $property,
