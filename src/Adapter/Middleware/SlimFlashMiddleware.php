@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Middleware;
+namespace App\Adapter\Middleware;
 
 use Odan\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
