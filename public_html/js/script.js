@@ -3,6 +3,19 @@ $(document).ready(function () {
 
     if (urlHistory) {
         urlHistory = JSON.parse(urlHistory);
+
+        urlHistory = urlHistory.map(row => {
+            if (!row.hasOwnProperty('huge')) return row;
+            return {
+                longUrl: row.huge,
+                shortenedUrl: row.shortened,
+                createdAt: row.created_at,
+                economyRate: row.economyRate,
+            };
+        });
+
+        window.localStorage.setItem('url_history', JSON.stringify(urlHistory));
+
         for (let index in urlHistory) {
             if (index === '5') break;
             $('div.shortened-urls ul').append(getHistoryItemTemplate(urlHistory[index]));
@@ -58,7 +71,7 @@ $(document).ready(function () {
         $.ajax({
             url: `${baseUrl}/api/public/shorten`,
             type: 'post',
-            data: { huge_url : $inputUrl.val() },
+            data: { long_url : $inputUrl.val() },
             beforeSend : function() {
                 $inputUrl.prop('disabled', true);
                 $btnShorten.prop('disabled', true);
@@ -85,15 +98,15 @@ $(document).ready(function () {
 
             const $divResult = $('div.shortened-url-result');
             $divResult.css('display', 'flex');
-            $divResult.find('a').attr('href', payload.data.shortened);
-            $divResult.find('a span.url-text').html(payload.data.shortened);
+            $divResult.find('a').attr('href', payload.data.shortenedUrl);
+            $divResult.find('a span.url-text').html(payload.data.shortenedUrl);
             $divResult.find('a span.badge').html(`-${payload.data.economyRate}%`);
-            $divResult.find('button').attr('data-url', payload.data.shortened);
+            $divResult.find('button').attr('data-url', payload.data.shortenedUrl);
         }).fail(function(jqXHR, textStatus, msg) {
             if (jqXHR.status === 400) {
                 const payload = jqXHR.responseJSON;
                 let message = '';
-                switch (payload.data.huge_url) {
+                switch (payload.data.longUrl) {
                     case 'invalid-url':
                         message = 'Insira ua URL válida com "http://" ou "https://" para poder encurtar.';
                         break;
@@ -132,16 +145,16 @@ $(document).ready(function () {
 function getHistoryItemTemplate(data) {
     return `
         <li>
-            <div class="long-url" title="${data.huge}">${data.huge.substring(0, 38)}...</div>
+            <div class="long-url" title="${data.longUrl}">${data.longUrl.substring(0, 38)}...</div>
             <div class="short-url">
                 <div class="link">
-                    <a href="${data.shortened}" target="_blank" title="URL encurtada de ${data.huge}">
-                        ${data.shortened}
+                    <a href="${data.shortenedUrl}" target="_blank" title="URL encurtada de ${data.longUrl}">
+                        ${data.shortenedUrl}
                     </a>
                 </div>
                 <div class="copy">
                     <div class="d-grid gap-2">
-                        <button data-url="${data.shortened}" class="btn btn-outline-primary copy-button">
+                        <button data-url="${data.shortenedUrl}" class="btn btn-outline-primary copy-button">
                             <i class="far fa-copy"></i> Copiar
                         </button>
                     </div>

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Slim\App;
-use App\Middleware\SessionMiddleware;
+use App\Adapter\Middleware\SessionMiddleware;
 use Slim\Views\TwigMiddleware;
 
 return function (App $app) {
