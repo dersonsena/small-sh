@@ -1,0 +1,11 @@
+plugins:
+  phpcodesniffer:
+    enabled: true
+    config:
+      file_extensions: "php"
+      standard: "PSR12"
+
+  editorconfig:
+    enabled: true
+    config:
+      editorconfig: .editorconfig
