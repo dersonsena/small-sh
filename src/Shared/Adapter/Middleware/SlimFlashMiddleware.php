@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Adapter\Middleware;
+namespace App\Shared\Adapter\Middleware;
 
 use Odan\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -22,7 +22,8 @@ final class SlimFlashMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->flash->__construct($_SESSION);
+        $allSession = $this->session->all();
+        $this->flash->__construct($allSession);
         return $handler->handle($request);
     }
 }

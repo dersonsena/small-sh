@@ -5,9 +5,11 @@ declare(strict_types=1);
 use App\Adapter\Repository\Database\DbLongUrlRepository;
 use App\Domain\Repository\LongUrlRepository;
 use App\Shared\Adapter\Contracts\DatabaseOrm;
+use App\Shared\Adapter\Contracts\TemplateEngine;
 use App\Shared\Adapter\Contracts\UuidGenerator;
 use App\Shared\Infra\PdoOrm;
 use App\Shared\Infra\RamseyUiidAdapter;
+use App\Shared\Infra\TwigAdapter;
 use DI\ContainerBuilder;
 use Odan\Session\Middleware\SessionMiddleware;
 use Odan\Session\PhpSession;
@@ -33,15 +35,14 @@ return function (ContainerBuilder $containerBuilder) {
         DatabaseOrm::class => function (ContainerInterface $c) {
             return new PdoOrm($c->get('db'));
         },
-        UuidGenerator::class => function (ContainerInterface $c) {
-            return new RamseyUiidAdapter();
-        },
+        UuidGenerator::class => DI\autowire(RamseyUiidAdapter::class),
         LongUrlRepository::class => function (ContainerInterface $c) {
             return new DbLongUrlRepository(
                 $c->get(DatabaseOrm::class),
-                $c->get(RamseyUiidAdapter::class),
+                $c->get(UuidGenerator::class),
                 $c->get('config')
             );
         },
+        TemplateEngine::class => DI\autowire(TwigAdapter::class)
     ]);
 };

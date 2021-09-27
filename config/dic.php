@@ -1,7 +1,9 @@
 <?php
 
+use App\Shared\Infra\TwigAdapter;
 use DI\ContainerBuilder;
-use Slim\Views\Twig;
+use Odan\Session\SessionInterface;
+use Slim\Flash\Messages;
 
 $containerBuilder = new ContainerBuilder();
 
@@ -10,17 +12,15 @@ $dependencies($containerBuilder);
 
 $container = $containerBuilder->build();
 
-$container->set('config', function() {
+$container->set('config', function () {
     return require __DIR__ . DS . 'config.php';
 });
 
 $container->set('view', function () use ($container) {
-    $twigConfig = $container->get('config')['twig'];
-    // $flash = $container->get(Messages::class);
-    // $session = $container->get(SessionInterface::class);
-    $twig = Twig::create($twigConfig['templatePath'], ['cache' => $twigConfig['cachePath']]);
-    $twig->getEnvironment()->addGlobal('baseUrl', $container->get('config')['baseUrl']);
-    return $twig;
+    $config = $container->get('config');
+    $flash = $container->get(Messages::class);
+    $session = $container->get(SessionInterface::class);
+    return new TwigAdapter($config, $flash, $session);
 });
 
 $container->set('db', function () use ($container) {

@@ -20,7 +20,7 @@ final class LongUrlType extends ValueObjectBase
     public function __construct(string $type)
     {
         if (!in_array($type, [self::TYPE_RANDOM, self::TYPE_CUSTOM])) {
-            throw InvalidLongUrl::forInvalidType($type);
+            throw InvalidLongUrl::forInvalidType('url-type', $type);
         }
 
         $this->type = $type;
