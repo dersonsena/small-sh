@@ -22,19 +22,6 @@ final class DbLongUrlRepository implements LongUrlRepository
 
     public function shortLongUrl(LongUrl $url): LongUrl
     {
-        while (true) {
-            $urlRecord = $this->orm->read('urls', ['short_url_path' => $url->getShortUrlPath()], [
-                'columns' => ['id']
-            ]);
-
-            if (!is_null($urlRecord)) {
-                $url->renewShortUrlPath();
-                continue;
-            }
-
-            break;
-        }
-
         $url->set('id', $this->uuidGenerator->create());
 
         $this->orm->create('urls', [

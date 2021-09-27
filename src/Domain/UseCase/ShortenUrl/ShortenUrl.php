@@ -11,19 +11,28 @@ use DateTimeInterface;
 final class ShortenUrl
 {
     public function __construct(
-        private LongUrlRepository $urlRepo
+        private LongUrlRepository $longUrlRepo
     ) {
     }
 
     public function execute(InputData $input): OutputData
     {
-        $longUrl = LongUrl::create([
-            'longUrl' => $input->longUrl,
-            'baseUrlToShortUrl' => $input->baseUrl,
-            'type' => $input->type
-        ]);
+        while (true) {
+            $longUrl = LongUrl::create([
+                'longUrl' => $input->longUrl,
+                'baseUrlToShortUrl' => $input->baseUrl,
+                'type' => $input->type
+            ]);
 
-        $longUrl = $this->urlRepo->shortLongUrl($longUrl);
+            if ($this->longUrlRepo->getUrlByPath($longUrl->getShortUrlPath())) {
+                $longUrl->renewShortUrlPath();
+                continue;
+            }
+
+            break;
+        }
+
+        $longUrl = $this->longUrlRepo->shortLongUrl($longUrl);
 
         return OutputData::create([
            'longUrl' => $longUrl->longUrl->value(),
