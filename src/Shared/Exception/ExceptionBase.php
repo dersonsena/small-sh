@@ -23,8 +23,8 @@ abstract class ExceptionBase extends Exception implements Error
         return $this->details;
     }
 
-    public function code(): int|string
+    public function getName(): string
     {
-        return $this->code;
+        return 'Generic Error';
     }
 }

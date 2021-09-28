@@ -7,5 +7,5 @@ namespace App\Shared\Exception;
 interface Error
 {
     public function details(): array;
-    public function code(): int | string;
+    public function getName(): string;
 }

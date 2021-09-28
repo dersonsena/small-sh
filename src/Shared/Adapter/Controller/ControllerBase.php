@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Shared\Adapter\Controller;
 
 use App\Shared\Adapter\Contracts\TemplateEngine;
+use App\Shared\Exception\Error;
+use App\Shared\Exception\RuntimeException;
+use App\Shared\Exception\ValidationException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Throwable;
 
 abstract class ControllerBase
 {
@@ -42,18 +44,36 @@ abstract class ControllerBase
             return $this->handle($this->request)
                 ->withHeader('Content-Type', 'text/html')
                 ->withStatus($this->statusCode);
-
-        } catch (Throwable $e) {
-            $this->response->getBody()->write("
-                <h1>{$e->getMessage()}</h1>
-                <h2>{$e->getFile()}: {$e->getLine()}</h2>
-                <pre>{$e->getTraceAsString()}</pre>"
-            );
-
-            return $this->response
-                ->withHeader('Content-Type', 'text/html')
-                ->withStatus(500);
+        } catch (ValidationException $e) {
+            return $this->answerBadRequest($e);
+        } catch (RuntimeException $e) {
+            return $this->answerServerError($e);
         }
+    }
+
+    protected function answerBadRequest(Error $e): Response
+    {
+        $newResponse = $this->response
+            ->withHeader('Content-Type', 'text/html')
+            ->withStatus(400);
+
+        $newResponse->getBody()->write("
+            <h1>{$e->getName()}</h1>
+            <h2>{$e->getMessage()}</h2>
+            <h2>Error Details: </h2>
+            <pre>" . print_r($e->details(), true) . "</pre>");
+
+        return $newResponse;
+    }
+
+    protected function answerServerError(Error $e): Response
+    {
+        $newResponse = $this->response
+            ->withHeader('Content-Type', 'text/html')
+            ->withStatus(500);
+
+        $newResponse->getBody()->write("<h1>{$e->getName()}</h1><h2>{$e->getMessage()}</h2>");
+        return $newResponse;
     }
 
     /**

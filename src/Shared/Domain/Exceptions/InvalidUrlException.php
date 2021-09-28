@@ -2,17 +2,22 @@
 
 namespace App\Shared\Domain\Exceptions;
 
-use App\Shared\Exception\ValidationException;
+use App\Shared\Exception\RuntimeException;
 
-final class InvalidUrlException extends ValidationException
+final class InvalidUrlException extends RuntimeException
 {
-    public static function forEmptyUrl(string $fieldName): self
+    public static function forEmptyUrl(): self
     {
-        return new self([$fieldName => 'empty-url'], "URL cannot be empty.");
+        return new self("URL cannot be empty.");
     }
 
-    public static function forInvalidUrl(string $fieldName, string $giveUrl): self
+    public static function forInvalidUrl(string $giveUrl): self
     {
-        return new self([$fieldName => 'invalid-url'], sprintf("The given URL '%s' is invalid", $giveUrl));
+        return new self(sprintf("The given URL '%s' is invalid", $giveUrl));
+    }
+
+    public function getName(): string
+    {
+        return 'Invalid URL Error';
     }
 }
