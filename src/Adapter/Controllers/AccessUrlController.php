@@ -5,44 +5,37 @@ declare(strict_types=1);
 namespace App\Adapter\Controllers;
 
 use App\Domain\Repository\LongUrlRepository;
-use Psr\Container\ContainerInterface;
+use App\Shared\Adapter\Controller\TemplateController;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Views\Twig;
 
-final class AccessUrlController
+final class AccessUrlController extends TemplateController
 {
-    private Twig $view;
-    private LongUrlRepository $longUrlRepo;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->view = $container->get('view');
-        $this->longUrlRepo = $container->get(LongUrlRepository::class);
+    public function __construct(
+        private LongUrlRepository $longUrlRepo
+    ) {
     }
 
-    public function __invoke(Request $request, Response $response, array $args): Response
+    public function handle(Request $request): Response
     {
-        $url = $this->longUrlRepo->getUrlByPath($args['path']);
+        $url = $this->longUrlRepo->getUrlByPath($this->args['path']);
 
         if (is_null($url)) {
-            return $this->view->render($response, 'notfound.html.twig', []);
+            return $this->render('notfound');
         }
 
         $this->longUrlRepo->registerAccess($url, [
             'REMOTE_ADDR' => $_SERVER['REMOTE_ADDR'],
             'REMOTE_PORT' => $_SERVER['REMOTE_PORT'],
+            'SERVER_PROTOCOL' => $_SERVER['SERVER_PROTOCOL'],
             'SERVER_NAME' => $_SERVER['SERVER_NAME'],
             'REQUEST_URI' => $_SERVER['REQUEST_URI'],
+            'REQUEST_METHOD' => $_SERVER['REQUEST_METHOD'],
             'HTTP_HOST' => $_SERVER['HTTP_HOST'],
-            'HTTP_USER_AGENT' => $_SERVER['HTTP_USER_AGENT']
+            'HTTP_USER_AGENT' => $_SERVER['HTTP_USER_AGENT'],
+            'HTTP_REFERER' => $_SERVER['HTTP_REFERER'],
         ]);
 
-        $newResponse = $response
-            ->withHeader('Content-type', 'application/json')
-            ->withStatus(302)
-            ->withHeader('Location', $url->longUrl->value());
-
-        return $newResponse;
+        return $this->redirect($url->longUrl->value());
     }
 }

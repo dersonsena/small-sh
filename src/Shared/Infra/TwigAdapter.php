@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
 use Slim\Flash\Messages;
 use Odan\Session\SessionInterface;
+use Twig\Extension\DebugExtension;
 
 final class TwigAdapter implements TemplateEngine
 {
@@ -21,6 +22,9 @@ final class TwigAdapter implements TemplateEngine
             ['cache' => APP_IS_PRODUCTION ? $config['twig']['cachePath'] : false]
         );
 
+        $this->twig->addExtension(new DebugExtension());
+
+        $this->twig->getEnvironment()->addGlobal('displayErrorDetails', $config['displayErrorDetails']);
         $this->twig->getEnvironment()->addGlobal('baseUrl', $config['baseUrl']);
         $this->twig->getEnvironment()->addGlobal('session', $session);
         $this->twig->getEnvironment()->addGlobal('flash', $flash);

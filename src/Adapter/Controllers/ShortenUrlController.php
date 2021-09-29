@@ -7,11 +7,12 @@ namespace App\Adapter\Controllers;
 use App\Domain\UseCase\ShortenUrl\InputData;
 use App\Domain\UseCase\ShortenUrl\ShortenUrl;
 use App\Domain\ValueObject\LongUrlType;
+use App\Shared\Adapter\Controller\RestController;
+use App\Shared\Exception\ValidationException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
 
-final class ShortenUrlController
+final class ShortenUrlController extends RestController
 {
     private array $config;
     private ShortenUrl $useCase;
@@ -22,34 +23,20 @@ final class ShortenUrlController
         $this->useCase = $container->get(ShortenUrl::class);
     }
 
-    public function __invoke(Request $request, Response $response, array $args): Response
+    public function handle(Request $request): array
     {
         $contents = $request->getParsedBody();
 
         if (empty($contents) || !array_key_exists('long_url', $contents)) {
-            $newResponse = $response
-                ->withHeader('Content-type', 'application/json')
-                ->withStatus(400);
-
-            $newResponse->getBody()->write(json_encode([
-                'status' => 'fail',
-                'data' => ['long_url' => 'missing-param']
-            ]));
-
-            return $newResponse;
+            throw new ValidationException(['long_url' => 'missing-param']);
         }
 
         if (empty($contents['long_url'])) {
-            $newResponse = $response
-                ->withHeader('Content-type', 'application/json')
-                ->withStatus(400);
+            throw new ValidationException(['long_url' => 'empty-value']);
+        }
 
-            $newResponse->getBody()->write(json_encode([
-                'status' => 'fail',
-                'data' => ['long_url' => 'empty-value']
-            ]));
-
-            return $newResponse;
+        if (!filter_var($contents['long_url'], FILTER_VALIDATE_URL)) {
+            throw new ValidationException(['long_url' => 'invalid-url']);
         }
 
         $result = $this->useCase->execute(InputData::create([
@@ -58,15 +45,6 @@ final class ShortenUrlController
             'baseUrl' => $this->config['baseUrl'],
         ]));
 
-        $newResponse = $response
-            ->withHeader('Content-type', 'application/json')
-            ->withStatus(200);
-
-        $newResponse->getBody()->write(json_encode([
-            'status' => 'success',
-            'data' => $result->values()
-        ]));
-
-        return $newResponse;
+        return $result->values();
     }
 }

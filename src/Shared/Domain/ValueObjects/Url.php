@@ -21,7 +21,7 @@ final class Url extends ValueObjectBase
         }
 
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            throw InvalidUrlException::forInvalidUrl($url, ['url' => $url]);
+            throw InvalidUrlException::forInvalidUrl($url);
         }
 
         $this->url = $url;
