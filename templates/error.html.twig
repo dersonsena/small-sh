@@ -1,0 +1,27 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}Houve um erro{% endblock %}
+
+{% block content %}
+    <div class="home-wrapper">
+        <header class="logo">
+            <h1 class="text-center"><strong>Small</strong>ish</h1>
+        </header>
+        <main class="text-center">
+            <h3 class="mb-5">Opss... ocorreu algum probleminha durante sua requisição. Por favor, tente novamente.</h3>
+            <a href="{{ baseUrl }}" title="Encurtar uma URL agora">Voltar para Home</a>
+
+            {% if displayErrorDetails %}
+                <hr />
+                <div style="text-align: left">
+                    <h3>Exception: {{ name }}</h3>
+                    <h5>Message: {{ message }}</h5>
+                    {% if details %}
+                        <pre class="mt-4">{{ dump(details) }}</pre>
+                    {% endif %}
+                    <pre class="mt-4" style="max-height: 300px">{{ stackTrace }}</pre>
+                </div>
+            {% endif %}
+        </main>
+    </div>
+{% endblock %}

@@ -91,7 +91,7 @@ abstract class DtoBase implements Dto
      */
     public function __set(string $name, mixed $value)
     {
-        throw InvalidDtoParam::forReadonlyProperty(get_class(), $name, $value);
+        throw InvalidDtoParam::forReadonlyProperty(get_class(), $name);
     }
 
     public function __isset($name): bool

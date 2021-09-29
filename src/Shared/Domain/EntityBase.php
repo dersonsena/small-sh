@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Shared\Domain;
 
 use App\Shared\Domain\Contracts\Entity;
-use App\Shared\Domain\Exceptions\EntityException;
+use App\Shared\Domain\Exceptions\InvalidEntityException;
 use DateTimeInterface;
 use ReflectionClass;
 use ReflectionException;
@@ -24,7 +24,7 @@ abstract class EntityBase implements Entity
     /**
      * Entity constructor.
      * @param array $values
-     * @throws EntityException
+     * @throws InvalidEntityException
      */
     final private function __construct(array $values)
     {
@@ -35,7 +35,7 @@ abstract class EntityBase implements Entity
      * Static method to create an Entity
      * @param array $values
      * @return EntityBase
-     * @throws EntityException
+     * @throws InvalidEntityException
      */
     public static function create(array $values): self
     {
@@ -52,7 +52,7 @@ abstract class EntityBase implements Entity
 
     /**
      * @inheritDoc
-     * @throws EntityException
+     * @throws InvalidEntityException
      */
     public function fill(array $values): void
     {
@@ -63,7 +63,7 @@ abstract class EntityBase implements Entity
 
     /**
      * @inheritDoc
-     * @throws EntityException
+     * @throws InvalidEntityException
      */
     public function set(string $property, $value): Entity
     {
@@ -80,11 +80,7 @@ abstract class EntityBase implements Entity
 
         if (!property_exists($this, $property)) {
             $className = get_class();
-            throw EntityException::readonlyProperty($className, $property, [
-                'className' => $className,
-                'property' => $property,
-                'value' => $value
-            ]);
+            throw InvalidEntityException::readonlyProperty($className, $property);
         }
 
         $this->{$property} = $value;
@@ -144,7 +140,7 @@ abstract class EntityBase implements Entity
      * Magic getter method to get an Entity property value
      * @param string $name
      * @return mixed
-     * @throws EntityException
+     * @throws InvalidEntityException
      */
     public function __get(string $name)
     {
@@ -156,26 +152,20 @@ abstract class EntityBase implements Entity
 
         if (!property_exists($this, $name)) {
             $className = get_class();
-            throw EntityException::propertyDoesNotExists($className, $name, [
-                'className' => $className,
-                'propertyName' => $name
-            ]);
+            throw InvalidEntityException::propertyDoesNotExists($className, $name);
         }
 
         return $this->{$name};
     }
 
     /**
+     * @param string $name
      * @param mixed $value
-     * @throws EntityException
+     * @throws InvalidEntityException
      */
-    public function __set(string $name, $value)
+    public function __set(string $name, mixed $value)
     {
         $className = get_class();
-        throw EntityException::readonlyProperty($className, $name, [
-            'className' => $className,
-            'property' => $name,
-            'value' => $value
-        ]);
+        throw InvalidEntityException::readonlyProperty($className, $name);
     }
 }

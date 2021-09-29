@@ -2,37 +2,22 @@
 
 namespace App\Shared\Domain\Exceptions;
 
-use App\Shared\Domain\Contracts\DomainException as DomainExceptionInterface;
-use Exception;
-use Throwable;
+use App\Shared\Exception\RuntimeException;
 
-final class InvalidUrlException extends Exception implements DomainExceptionInterface
+final class InvalidUrlException extends RuntimeException
 {
-    protected array $details = [];
-
-    private function __construct(
-        string $message = 'Domain Exception',
-        array $details = [],
-        int $code = 0,
-        Throwable $previous = null
-    ) {
-        $this->message = $message;
-        $this->details = $details;
-        parent::__construct($this->message, $code, $previous);
-    }
-
     public static function forEmptyUrl(): self
     {
         return new self("URL cannot be empty.");
     }
 
-    public static function forInvalidUrl(string $giveUrl, array $details = []): self
+    public static function forInvalidUrl(string $giveUrl): self
     {
-        return new self("The given URL '{$giveUrl}' is invalid", $details);
+        return new self(sprintf("The given URL '%s' is invalid", $giveUrl));
     }
 
-    public function details(): array
+    public function getName(): string
     {
-        return $this->details();
+        return 'Invalid URL Error';
     }
 }

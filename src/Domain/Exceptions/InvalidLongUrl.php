@@ -2,31 +2,12 @@
 
 namespace App\Domain\Exceptions;
 
-use Exception;
-use Throwable;
+use App\Shared\Exception\ValidationException;
 
-final class InvalidLongUrl extends Exception
+final class InvalidLongUrl extends ValidationException
 {
-    protected array $details = [];
-
-    private function __construct(
-        string $message = 'Domain Exception',
-        array $details = [],
-        int $code = 0,
-        Throwable $previous = null
-    ) {
-        $this->message = $message;
-        $this->details = $details;
-        parent::__construct($this->message, $code, $previous);
-    }
-
-    public static function forInvalidType(string $giveType, array $details = []): self
+    public static function forInvalidType(string $fieldName, string $giveType): self
     {
-        return new self("The given URL Type '{$giveType}' is invalid", $details);
-    }
-
-    public function details(): array
-    {
-        return $this->details();
+        return new self([$fieldName => 'invalid-type'], "The given URL Type '{$giveType}' is invalid");
     }
 }
