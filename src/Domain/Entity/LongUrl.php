@@ -19,13 +19,15 @@ use DateTimeInterface;
  */
 final class LongUrl extends EntityBase
 {
+    public const SHORT_URL_PATH_LENGTH = 5;
+
     protected Url $baseUrlToShortUrl;
     protected Url $longUrl;
     protected LongUrlType $type;
     protected ?Url $shortUrl;
     protected ?DateTimeInterface $createdAt;
 
-    public static function create(array $values): EntityBase
+    public static function create(array $values): self
     {
         if (!isset($values['createdAt'])) {
             $values['createdAt'] = (new DateTimeImmutable())->format(DateTimeInterface::ATOM);
@@ -81,6 +83,6 @@ final class LongUrl extends EntityBase
 
     public static function generatePathToShortUrl(): string
     {
-        return substr(sha1(uniqid((string)rand(), true)), 0, 5);
+        return substr(sha1(uniqid((string)rand(), true)), 0, self::SHORT_URL_PATH_LENGTH);
     }
 }

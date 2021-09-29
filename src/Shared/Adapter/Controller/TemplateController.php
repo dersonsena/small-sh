@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Shared\Adapter\Controller;
 
 use App\Shared\Adapter\Contracts\TemplateEngine;
+use App\Shared\Exception\Error;
 use App\Shared\Exception\RuntimeException;
+use App\Shared\Exception\ValidationException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Throwable;
@@ -33,16 +35,17 @@ abstract class TemplateController extends ControllerBase
             return $this->handle($this->request)
                 ->withHeader('Content-Type', 'text/html')
                 ->withStatus(200);
-        } catch (Throwable | RuntimeException $e) {
+        } catch (ValidationException | RuntimeException $e) {
             return $this->answerError($e);
         }
     }
 
-    private function answerError(RuntimeException $e): Response
+    private function answerError(Error $e): Response
     {
         $newResponse = $this->render('error', [
             'name' => $e->getName(),
             'message' => $e->getMessage(),
+            'details' => $e->details(),
             'stackTrace' => $e->getTraceAsString()
         ])
             ->withHeader('Content-Type', 'text/html')
