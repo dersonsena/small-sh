@@ -9,13 +9,13 @@ use Exception;
 abstract class ExceptionBase extends Exception implements Error
 {
     protected array $details = [];
-    protected int | string $errorCode = 0;
+    protected int | string $errorCode;
 
     public function __construct(array $details, string $message = '', ?int $code = 0, Exception $previous = null)
     {
         parent::__construct($message ?: 'Application Error', $code, $previous);
         $this->details = $details;
-        $this->code = $code;
+        $this->code = $this->errorCode ?? $code;
     }
 
     public function details(): array

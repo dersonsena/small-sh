@@ -8,7 +8,6 @@ use App\Domain\UseCase\ShortenUrl\InputData;
 use App\Domain\UseCase\ShortenUrl\ShortenUrl;
 use App\Domain\ValueObject\LongUrlType;
 use App\Shared\Adapter\Controller\RestController;
-use App\Shared\Exception\ValidationException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface as Request;
 
@@ -27,20 +26,8 @@ final class ShortenUrlController extends RestController
     {
         $contents = $request->getParsedBody();
 
-        if (empty($contents) || !array_key_exists('long_url', $contents)) {
-            throw new ValidationException(['long_url' => 'missing-param']);
-        }
-
-        if (empty($contents['long_url'])) {
-            throw new ValidationException(['long_url' => 'empty-value']);
-        }
-
-        if (!filter_var($contents['long_url'], FILTER_VALIDATE_URL)) {
-            throw new ValidationException(['long_url' => 'invalid-url']);
-        }
-
         $result = $this->useCase->execute(InputData::create([
-            'longUrl' => $contents['long_url'],
+            'longUrl' => $contents['long_url'] ?? '',
             'type' => LongUrlType::TYPE_RANDOM,
             'baseUrl' => $this->config['baseUrl'],
         ]));

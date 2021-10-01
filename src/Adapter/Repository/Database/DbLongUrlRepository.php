@@ -8,6 +8,7 @@ use App\Domain\Entity\LongUrl;
 use App\Domain\Repository\LongUrlRepository;
 use App\Shared\Adapter\Contracts\DatabaseOrm;
 use App\Shared\Adapter\Contracts\UuidGenerator;
+use App\Shared\Exception\ValidationException;
 use DateTimeImmutable;
 use PDO;
 
@@ -39,6 +40,16 @@ final class DbLongUrlRepository implements LongUrlRepository
 
     public function getUrlByPath(string $path): ?LongUrl
     {
+        $errors = [];
+
+        if (empty($path)) {
+            $errors['path'][] = 'empty-path';
+        }
+
+        if (!empty($errors)) {
+            throw new ValidationException($errors);
+        }
+
         $urlRecord = $this->orm->read('urls', ['short_url_path' => $path]);
 
         if (is_null($urlRecord)) {

@@ -8,7 +8,6 @@ use App\Shared\Exception\RuntimeException;
 use App\Shared\Exception\ValidationException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Throwable;
 
 abstract class RestController extends ControllerBase
 {
@@ -44,7 +43,7 @@ abstract class RestController extends ControllerBase
             }
 
             return $this->answerFail($e->details(), $meta);
-        } catch (RuntimeException | Throwable $e) {
+        } catch (RuntimeException $e) {
             $meta = [];
 
             if (!APP_IS_PRODUCTION) {
