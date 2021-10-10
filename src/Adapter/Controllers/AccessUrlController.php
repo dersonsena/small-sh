@@ -33,7 +33,7 @@ final class AccessUrlController extends TemplateController
             'REQUEST_METHOD' => $_SERVER['REQUEST_METHOD'],
             'HTTP_HOST' => $_SERVER['HTTP_HOST'],
             'HTTP_USER_AGENT' => $_SERVER['HTTP_USER_AGENT'],
-            'HTTP_REFERER' => $_SERVER['HTTP_REFERER'],
+            'HTTP_REFERER' => $_SERVER['HTTP_REFERER'] ?? '',
         ]);
 
         return $this->redirect($url->longUrl->value());

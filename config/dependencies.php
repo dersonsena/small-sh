@@ -40,7 +40,7 @@ return function (ContainerBuilder $containerBuilder) {
             return new DbLongUrlRepository(
                 $c->get(DatabaseOrm::class),
                 $c->get(UuidGenerator::class),
-                $c->get('config')
+                $c->get('config')['baseUrl']
             );
         },
         TemplateEngine::class => DI\autowire(TwigAdapter::class)
