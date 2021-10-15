@@ -70,12 +70,39 @@ final class PdoOrm implements DatabaseOrm
 
     public function update(string $tableName, array $values, array $conditions): bool
     {
-        return true;
+        $columns = array_keys($values);
+        $columnsToUpdate = array_map(fn($columnName) => "`{$columnName}` = :{$columnName}", $columns);
+        $clauses = [];
+
+        foreach ($conditions as $columnName => $value) {
+            $values[$columnName] = $value;
+            $clauses[] = "`{$columnName}` = :{$columnName}";
+        }
+
+        $sql = sprintf(
+            'UPDATE `%s` SET %s WHERE %s',
+            $tableName,
+            implode(', ', $columnsToUpdate),
+            implode(' AND ', $clauses),
+        );
+
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($values);
     }
 
     public function delete(string $tableName, array $conditions): bool
     {
-        return true;
+        $values = [];
+        $clauses = [];
+
+        foreach ($conditions as $columnName => $value) {
+            $values[$columnName] = $value;
+            $clauses[] = "`{$columnName}` = :{$columnName}";
+        }
+
+        $sql = sprintf('DELETE FROM `%s` WHERE %s', $tableName, implode(' AND ', $clauses));
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($values);
     }
 
     public function search(string $tableName, array $filters, array $options = []): array
@@ -85,7 +112,12 @@ final class PdoOrm implements DatabaseOrm
 
     public function persist(string $tableName, array $values): int|string
     {
-        return '';
+        if (isset($values['id']) && !empty($values['id'])) {
+            $this->update($tableName, $values, ['id' => $values['id']]);
+            return $values['uuid'];
+        }
+
+        return $this->create($tableName, $values);
     }
 
     public function querySql(string $sql, array $values = [], array $options = []): array

@@ -8,31 +8,35 @@ use App\Domain\Entity\LongUrl;
 use App\Domain\Repository\LongUrlRepository;
 use App\Shared\Adapter\Contracts\DatabaseOrm;
 use App\Shared\Adapter\Contracts\UuidGenerator;
+use App\Shared\Adapter\RepositoryBase;
 use App\Shared\Exception\ValidationException;
 use DateTimeImmutable;
 use PDO;
 
-final class DbLongUrlRepository implements LongUrlRepository
+final class DbLongUrlRepository extends RepositoryBase implements LongUrlRepository
 {
+    protected string $tableName = 'urls';
+
     public function __construct(
-        private DatabaseOrm $orm,
+        protected DatabaseOrm $orm,
         private UuidGenerator $uuidGenerator,
-        private array $config
+        private string $baseUrl
     ) {
+        parent::__construct($this->orm);
     }
 
     public function shortLongUrl(LongUrl $url): LongUrl
     {
         $url->set('id', $this->uuidGenerator->create());
 
-        $this->orm->create('urls', [
-           'id' => $this->uuidGenerator->toBytes($url->id),
-           'uuid' => $url->id,
-           'long_url' => $url->longUrl->value(),
-           'short_url_path' => $url->getShortUrlPath(),
-           'type' => $url->type->value(),
-           'economy_rate' => $url->calculateEconomyRate(),
-           'created_at' => $url->createdAt->format('Y-m-d H:i:s')
+        $this->create([
+            'id' => $this->uuidGenerator->toBytes($url->id),
+            'uuid' => $url->id,
+            'long_url' => $url->longUrl->value(),
+            'short_url_path' => $url->getShortUrlPath(),
+            'type' => $url->type->value(),
+            'economy_rate' => $url->calculateEconomyRate(),
+            'created_at' => $url->createdAt->format('Y-m-d H:i:s')
         ]);
 
         return $url;
@@ -50,7 +54,7 @@ final class DbLongUrlRepository implements LongUrlRepository
             throw new ValidationException($errors);
         }
 
-        $urlRecord = $this->orm->read('urls', ['short_url_path' => $path]);
+        $urlRecord = $this->fetchOne(['short_url_path' => $path]);
 
         if (is_null($urlRecord)) {
             return null;
@@ -59,8 +63,8 @@ final class DbLongUrlRepository implements LongUrlRepository
         return LongUrl::create([
             'id' => $urlRecord['uuid'],
             'longUrl' => $urlRecord['long_url'],
-            'shortUrl' => $this->config['baseUrl'] . '/' . $urlRecord['short_url_path'],
-            'baseUrlToShortUrl' => $this->config['baseUrl'],
+            'shortUrl' => $this->baseUrl . '/' . $urlRecord['short_url_path'],
+            'baseUrlToShortUrl' => $this->baseUrl,
             'type' => $urlRecord['type'],
             'createdAt' => $urlRecord['created_at']
         ]);
@@ -82,7 +86,9 @@ final class DbLongUrlRepository implements LongUrlRepository
     public function countUrlsAndClicks(): array
     {
         $sql = "
-            select count(*) as `total_urls` from `urls` union all select count(*) as `total_clicks` from `urls_logs`
+            select count(*) as `total_urls` from `{$this->tableName}`
+            union all
+            select count(*) as `total_clicks` from `urls_logs`
         ";
 
         $rows = $this->orm->querySql($sql, [], ['fetchMode' => PDO::FETCH_COLUMN]);
